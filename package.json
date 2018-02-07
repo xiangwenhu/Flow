@@ -1,0 +1,31 @@
+{
+  "name": "flow",
+  "version": "1.0.0",
+  "description": "Action, Group , Flow 三个基本元素",
+  "main": "server/app.js",
+  "dependencies": {
+    "koa": "^2.3.0",
+    "koa-body": "^2.5.0",
+    "koa-compose": "^4.0.0",
+    "koa-router": "^7.4.0",
+    "koa-static": "^4.0.1",
+    "log4js": "^2.5.2",
+    "node-fetch": "^1.7.3",
+    "socket.io": "^2.0.4",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiangwenhu/Flow.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiangwenhu/Flow/issues"
+  },
+  "homepage": "https://github.com/xiangwenhu/Flow#readme"
+}

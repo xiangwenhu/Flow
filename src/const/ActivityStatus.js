@@ -1,0 +1,27 @@
+// 未初始化
+const UNINITIALIZED = 'UNINITIALIZED'
+// 初始化
+const INITIALIZED = 'INITIALIZED'
+// 构建中
+const BUILDING = 'BUILDING'
+// 构建完毕
+const BUILDED = 'BUILDED'
+// 执行中
+const EXECUTING = 'EXECUTING'
+// 执行完毕
+const EXECUTED = 'EXECUTED'
+// 异常
+const EXCEPTION = 'EXCEPTION'
+// 被终止
+const TERMINATED = 'TERMINATED'
+
+module.exports = {
+    UNINITIALIZED,
+    INITIALIZED,
+    BUILDING,
+    BUILDED,
+    EXECUTING,
+    EXECUTED,
+    EXCEPTION,
+    TERMINATED
+}

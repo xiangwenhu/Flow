@@ -1,0 +1,20 @@
+{
+    "appenders": {
+        "console": {
+            "type": "console"
+        },
+        "log_file": {
+            "type": "file",
+            "filename": "./logs/flow.log",
+            "maxLogSize": 104857600,
+            "backups": 100
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": ["log_file"],
+            "level": "all"
+        }
+    },
+    "replaceConsole": true
+}

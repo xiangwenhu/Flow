@@ -1,0 +1,6 @@
+node_modules/
+package-lock.json
+server/test/ttttttttttd.js
+logs/**
+demo/**
+client/demo/**
