@@ -6,57 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>进度演示</title>
-    <script src="/socket.io/socket.io.js"></script>
-    <style>
-        li {
-            list-style: none
-        }
-
-        .UNINITIALIZED,
-        .INITIALIZED,
-        .BUILDING,
-        .BUILDED,
-        .EXECUTING,
-        .EXECUTED,
-        .EXCEPTION {
-            margin: 3px;
-        }
-
-        .UNINITIALIZED {
-            border: 3px solid #696969;
-            color: 696969
-        }
-
-        .INITIALIZED {
-            border: 3px solid #778899;
-            color: #778899
-        }
-
-        .BUILDING {
-            border: 3px solid #4169E1;
-            color: #4169E1
-        }
-
-        .BUILDED {
-            border: 3px solid #4682B4;
-            color: #4682B4
-        }
-
-        .EXECUTING {
-            border: 3px solid #008B8B;
-            color: #008B8B
-        }
-
-        .EXECUTED {
-            border: 3px solid #006400;
-            color: #006400
-        }
-
-        .EXCEPTION {
-            border: 3px solid #B22222;
-            color: #B22222
-        }
-    </style>
+    <link href="css/progressShow.css" type="text/css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>    
 </head>
 
 <body>
@@ -120,6 +71,7 @@
 
     </div>
 </body>
+<script src='js/progressFactory.js'></script>
 <script src='js/progress.js'></script>
 
 </html>

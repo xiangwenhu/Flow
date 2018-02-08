@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>静态显示进度</title>
+    <link href="css/progressShow.css" type="text/css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <textarea id='flowArea' style="width:100%; height:300px; overflow-y:auto">
+            {"type":"sequence","name":"玛丽玛丽","status":"EXECUTING","id":"c392b2bb-536e-466c-8e54-e6bb01ae991f","children":[{"type":"code","name":"输出当前日期","status":"EXECUTED","id":"5d5db962-5051-4f4f-b625-10d642e72eee","children":null},{"type":"delay","name":"延时2秒","status":"EXECUTED","id":"2481eb92-ebbf-4d13-81c9-5d5a3a1db853","children":null},{"type":"code","name":"输出当前日期","status":"EXECUTED","id":"442b1fb4-aa96-41ac-bf7b-53af11312870","children":null},{"type":"catch","name":"错误捕捉","status":"INITIALIZED","id":"6d16a9e0-e242-43ee-8350-7bc223278fd9","children":null},{"type":"sequence","name":"break测试","status":"EXECUTED","id":"9528f829-c492-4dba-ba9a-8dd9d7dec4bc","children":[{"type":"code","name":"输出11111","status":"EXECUTED","id":"77073141-3b2c-4dbb-995c-3da7907c8894","children":null},{"type":"delay","name":"延时4秒","status":"EXECUTED","id":"b4046739-42a7-4879-bd3e-65f571d0d858","children":null},{"type":"break","name":"跳出break测试","status":"EXECUTED","id":"124632c9-c9e3-48e1-8ed7-f82fdf788e56","children":null},{"type":"code","name":"输出22222","status":"INITIALIZED","id":"4db1f571-5114-4706-9bcd-4d4ba9622077","children":null}]},{"type":"code","name":"输出33333","status":"EXECUTED","id":"626c39dc-fffc-490a-b396-419ca0c5820c","children":null},{"type":"delay","name":"延时5秒","status":"EXECUTING","id":"c9cd48c1-2253-48c3-84f1-6ae7275c9876","children":null}]}
+    </textarea>
+    <input type="button" value="显示进度" id='btnShow' />
+    <div id='progressEl'>
+
+    </div>
+
+    <script src="js/progressFactory.js"></script>
+    <script>        
+        document.getElementById('btnShow').addEventListener('click', _ => {
+            progressFactory.build( eval(`(${flowArea.value})`),'#progressEl' )
+        })
+    </script>
+</body>
+
+</html>

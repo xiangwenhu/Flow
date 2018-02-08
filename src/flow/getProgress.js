@@ -52,9 +52,4 @@ const getProgress = function getProgress(activity) {
     return Array.isArray(activity) ? getActivities(activity) : getActivity(activity)
 }
 
-
-
-
-module.exports = {
-    getProgress
-}
+module.exports = getProgress

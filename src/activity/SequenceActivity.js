@@ -132,10 +132,10 @@ class SequenceActivity extends Activity {
                                 // 执行                              
                                 res = await ins.execute(realContext, res || {})
 
-                                // 需要停止
+                                // 需要停止 ?? 转移到 Activity 里面去？
                                 if (self.needTerminate(self)) {
                                     self.status = ins.status = ActivityStatus.TERMINATED;
-                                    return reject(new ActivityError('用户停止', this.type, this.name, true))
+                                    return reject(new ActivityError(self.root._global_.terminateMessage, this.type, this.name, true))
                                 }
 
                                 // 如果是BreackActivity结束当前Sequence

@@ -20,11 +20,12 @@
     现在有一个专门TerminateAction用来终止流程，原理是抛出一个Promise.reject(ActivityError), ActivityError是一层一层往外抛出到达终止流程
     当然也可以通过设置ctx，虽然context||ctx可以自己单独设置，可以合并参数
 * 进度视图
-* 人机交互  
-    1. emitter是独立的，connector 把Activity下所有的InterActActivity与 emitter联系起来
-    2. InterActActivity在beforeExecute的时候会通过外面，传递给外面参数： id, 参数列表？    
-    3. 外界接到需要交互时，会通过比如socket等形式再通知用户，   
-    4. 用户输入相关数据后，通过socket等形式再通过emiiter.emit把相关数据传回给InterActActivity
+* 人机交互 
+  **改进为，每次execute或者状态变更时，托管给FlowInstance去处理，处理完毕后，处理结果应该进行某些操作后，return Promise.resolve(res)**
+    1. 对外通讯， 通过在Root Activity 挂载了_dispatch防范， _dispatch(activity, root)[应该是一个拷贝？属性的拷贝？]
+    2. 人工终止，Root的 _global_ 添加属性
+        this.activity._global_.terminateImmediate = true
+        this.activity._global_.terminateMessage = message
 * 超时处理
     Activity 开始执行的同时，开启计时器？ 
 * 遍历死循环 
@@ -55,10 +56,27 @@
 
 ## TODO
 1. logger和对外的emmiter都应该已中间件的形式，类似koa或者socket.io的use形式注入， 禁止在Activity里面引入任何与活动本身无关的东西
+   TODO::
 2. Activity的实例化，应该设计为类似React, vue等那种属性检查的,构造函数第一个参数context, 后面为obj，然后复制到实例上
 3. Activity应该提供progress进度的对外接口，利于获得实际的执行的进度？？
+   OK
 4. FlowManager统一对流程的管理，提供对某个流程的终止功能
 5. 全局初始化支持异步，每个活动的执行前的中间件不支持异步
+6. 交互处理，应该交给FlowInstance或者其他设计， 每次状态变更，Flow会获得控制权，得到参数 当前的Activity, res，    
+    处理完毕后，调用Promose.resolve(res) 或者依据情况，终止流程
+    Activity:
+    act.execute({}).then( res =>
+        return instance.dispatch(this, res)
+    )
+    FlowInstance:
+    dispatch(activity, res){
+        // TODO:: 这里可以是中间件或者blabla等等
+        //  错误检查？？？
+        // 记录日志
+        // 对外交互
+        // TODO::
+        return Promose.resolve(res)
+    }
 
 
 

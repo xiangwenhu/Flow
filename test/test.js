@@ -2,7 +2,8 @@
 // require('./break')
 // require('./code')
 //require('./delay')
- require('./fetch')
+ //require('./fetch')
+ require('./FlowManager')
 // require('./ifelse')
 //require('./race')
 // require('./terminate')
@@ -16,3 +17,4 @@
 //require('./stackError')
 
 //require('./interactEmitter')
+

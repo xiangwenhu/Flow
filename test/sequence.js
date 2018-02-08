@@ -1,5 +1,5 @@
 const ActivityFactory = require('../src/factory/ActivityFactory'),
-    flowProgress = require('../src/flow/flowProgress')
+    getProgress = require('../src/flow/getProgress')
 
 const config = {
     type: 'sequence',
@@ -41,6 +41,6 @@ activity.execute({}).catch(err => {
     console.log(err.toString())
 })
 
-const flow = flowProgress.getProgress(activity)
+const flow = getProgress(activity)
 
 console.log(flow)

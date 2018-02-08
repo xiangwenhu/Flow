@@ -1,11 +1,7 @@
 const ActivityError = require('../error/ActivityError'),
     Item = require('../base/Item'),
-    logger = require('../common/logger'),
     FunctionFactory = require('../factory/FunctionFactory'),
     ActivityStatus = require('../const/ActivityStatus'),
-    {
-        statusEmitter: emitter
-    } = require('../common/emitter'),
     {
         isFunction,
         isString,
@@ -48,7 +44,7 @@ class Activity extends Item {
      * 设置状态，同时通知
      */
     set status(status) {
-        if (this.status != ActivityStatus.EXCEPTION) {
+        if (this.status != ActivityStatus.EXCEPTION || this.status != ActivityStatus.TERMINATED) {
             this._status = status
             this._commit()
         }
@@ -58,11 +54,10 @@ class Activity extends Item {
         return this._status
     }
 
-    _commit() {
-        if (this.isActivity(this.parent)) {
-            return this.parent._commit()
+    _commit() {        
+        if (this.root && isFunction(this.root._dispatch)) {
+            this.root._dispatch(this, this.root)
         }
-        return emitter.statusChanged(this)
     }
 
     beforeBuild() {
@@ -142,11 +137,6 @@ class Activity extends Item {
         if (isFunction(this.beforeBuild)) {
             this.beforeBuild()
         }
-        this.logInfo({
-            id: this._id,
-            type: this.type,
-            name: this.name
-        }, `buildWithCode开始,参数code为${code}`)
         if (!isString(code) && !isBoolean(code)) {
             throw new ActivityError({
                 message: 'buildWithCode方法的code参数必须是字符串',
@@ -161,11 +151,6 @@ class Activity extends Item {
         if (isFunction(this.afterBuild)) {
             this.afterBuild()
         }
-        this.logInfo({
-            id: this._id,
-            type: this.type,
-            name: this.name
-        }, 'Activity---buildWithCode结束')
         return this.fn
     }
 
@@ -184,9 +169,9 @@ class Activity extends Item {
      */
     execute(ctx, res, ...otherParams) {
         // 如果接受到终止命令
-        if (this.root._global_ && this.root._global_.stopimmediate === true && !this.parent) {
+        if (this.needTerminate()) {
             this.status = ActivityStatus.TERMINATED
-            return Promise.reject(new ActivityError(this.message, this.type, this.name, true))
+            return Promise.reject(new ActivityError(this.root._global_.terminateMessage, this.type, this.name, true))
         }
         this._innerBuild()
         if (!isFunction(this.fn)) {
@@ -196,11 +181,6 @@ class Activity extends Item {
                 name: this.name
             })
         }
-        this.logInfo({
-            id: this._id,
-            type: this.type,
-            name: this.name
-        }, `execute开始,参数ctx为${JSON.stringify(ctx)},fn代码为${this.fn.toString()}`)
 
         let realContext = this.context || ctx || {}
         if (isFunction(this.beforeExecute)) {
@@ -215,12 +195,7 @@ class Activity extends Item {
                 if (isFunction(this.afterExecute)) {
                     result = this.afterExecute(realContext, result)
                 }
-                //XXX:: status = Exception 不是在此设置的，没法知道result的状态       
-                this.logInfo({
-                    id: this._id,
-                    type: this.type,
-                    name: this.name
-                }, 'execute结束')
+                //XXX:: status = Exception 不是在此设置的，没法知道result的状态  
                 return res
             }).catch(err => {
                 self.status = ActivityStatus.EXCEPTION
@@ -233,14 +208,6 @@ class Activity extends Item {
         return null
     }
 
-    logInfo(...args) {
-        logger.info(args)
-    }
-
-    logError(...args) {
-        logger.error(args)
-    }
-
     /**
      * 
      * @param {待检查的Activity} activity 
@@ -251,7 +218,7 @@ class Activity extends Item {
 
     needTerminate(activity) {
         const act = activity || this
-        return act.root._global_ && act.root._global_.stopimmediate === true
+        return act.root._global_ && act.root._global_.terminateImmediate === true
     }
 
     isRoot(activity) {
