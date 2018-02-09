@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>人机交互演示</title>
+    <link href="css/progressShow.css" type="text/css" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>  
+</head>
+
+<body>
+
+    <textarea id='flowArea' style="width:100%; height:300px; overflow-y:auto">
+         {
+            type: 'sequence',
+            name: '组合',
+            children: [{
+                type: 'code',
+                name: '输出当前时间',
+                code: 'console.log(new Date().toLocaleString())'
+            },{
+                type: 'interact',
+                name: '获取参数',
+                descriptor: {
+                    name: '名字',
+                    age: '年龄'
+                }
+            },{
+                type: 'code',
+                name: '输出res',
+                code: 'console.log(res),ctx.res = res'
+            },{
+                type: 'delay',
+                time: 2000
+            }]
+        }        
+    </textarea>
+    <input type="button" value="执行" id='btnExecute' />
+    <br>
+    <input type="button" value="确认参数" id='btnPass' />
+    <form id='paramsEl'>
+        <input name='a'>
+    </form>
+    <div id='progressEl'>
+
+    </div>
+
+    <script src="js/progressFactory.js"></script>
+    <script>
+        const progressEl = document.querySelector('#progressEl')
+
+        const socket = io()
+        socket.on('connection', () => {
+
+        })
+
+        // 收到状态变化通知
+        socket.on('status', (id, data) => {
+            renderFlow(data)
+        })
+        // 执行完毕结果
+        socket.on('finish', (r, ctx) => {
+            alert(JSON.stringify(ctx))
+            console.log(r, ctx)
+        })
+        // 收到要求交互参数
+        socket.on('interact', descriptor => {
+            renderParamtersPanel(descriptor)
+        })
+
+        let areaEl = document.querySelector('#flowArea')
+        btnExecute.addEventListener('click', function () {
+            socket.emit('invoke', eval('(' + areaEl.value.trim() + ')'))
+        })
+
+        btnPass.addEventListener('click', function () {
+            let d = getParamters()
+            socket.emit('interact',d)
+        })
+
+        function renderFlow(data) {
+            progressFactory.build(data, '#progressEl')
+        }
+
+        // 复杂对象可以直接输入json对象，直接传回，这里演示简单键值对
+        function renderParamtersPanel(descriptor) {
+            let html = ''
+            for (let p in descriptor) {
+                html += `<label>${p}</label>:<input name='${p}'>`
+            }
+            paramsEl.innerHTML = html
+        }
+
+        // 获得Form参数
+        function getParamters() {
+            let p = {};
+            [...paramsEl.querySelectorAll('[name]')].forEach(el => {
+                p[el.name] = el.value
+            })
+            return p
+        }
+    </script>
+</body>
+
+</html>

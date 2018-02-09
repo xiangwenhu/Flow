@@ -54,9 +54,9 @@ class Activity extends Item {
         return this._status
     }
 
-    _commit() {        
+    _commit(type = 'status') {
         if (this.root && isFunction(this.root._dispatch)) {
-            this.root._dispatch(this, this.root)
+            this.root._dispatch(type, this, this.root)
         }
     }
 

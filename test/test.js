@@ -3,7 +3,7 @@
 // require('./code')
 //require('./delay')
  //require('./fetch')
- require('./FlowManager')
+ //require('./FlowManager')
 // require('./ifelse')
 //require('./race')
 // require('./terminate')
@@ -16,5 +16,5 @@
 
 //require('./stackError')
 
-//require('./interactEmitter')
+require('./interactEmitter')
 

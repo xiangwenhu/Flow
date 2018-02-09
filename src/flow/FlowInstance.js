@@ -8,11 +8,12 @@ const {
 
 module.exports = class FlowInstance {
     constructor(activity) {
-        this.listeners = []
+        this.listeners = {}
         this.id = uuid()
         this.activity = activity
+        this.activity.instance = this
         this.enbaleLogger = true
-        this.subscribe((activity, root) => {
+        this.subscribe('status', (activity, root) => {
             logger.info({
                 id: activity._id,
                 type: activity.type,
@@ -50,11 +51,17 @@ module.exports = class FlowInstance {
      * @param {执行返回结果} res 
      * @param {上下文} context 
      */
-    dispatch(activity, root) {
-        for (let i = 0; i < this.listeners.length; i++) {
-            const listener = this.listeners[i]
-            listener(...arguments)
+    dispatch(type, ...args) {
+        if (this.listeners[type]) {
+            for (let i = 0; i < this.listeners[type].length; i++) {
+                const listener = this.listeners[type][i]
+                listener(...args)
+            }
         }
+    }
+
+    dispatchInteractReponse(...args) {
+        this.dispatch('interact-response', ...args)
     }
 
     /**
@@ -68,20 +75,37 @@ module.exports = class FlowInstance {
      * 订阅Activity的状态变化等
      * @param {监听} listener 
      */
-    subscribe(listener) {
+    subscribe(type, listener) {
+        // 未定义type，默认为status
+        if (!listener) {
+            listener = type
+            type = 'status'
+        }
         if (!isFunction(listener)) {
             throw new Error('listener应该是一个函数')
         }
-
         let isSubscribed = true
-        this.listeners.push(listener)
+        this._ensureType(type)
+        this.listeners[type].push(listener)
         return function unsubscribe() {
             if (!isSubscribed) {
                 return
             }
             isSubscribed = false
-            const index = this.listeners.indexOf(listener)
-            this.listeners.splice(index, 1)
+            const index = this.listeners[type].indexOf(listener)
+            this.listeners[type].splice(index, 1)
         }
+    }
+
+    subscribeInteractRequest(listener) {
+        this.subscribe('interact-request', listener)
+    }
+
+    subscribeInteractReponse(listener) {
+        this.subscribe('interact-response', listener)
+    }
+
+    _ensureType(type) {
+        return this.listeners[type] || (this.listeners[type] = [])
     }
 }

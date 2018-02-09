@@ -13,11 +13,6 @@ class Interactctivity extends Activity {
         this.message = message
     }
 
-    set emitter(emitter) {
-        this._emitter = emitter
-    }
-
-    // FIXME::
     build(descriptor, time, message) {
         // 设置超时时间
         this.time = time || this.time
@@ -37,13 +32,14 @@ class Interactctivity extends Activity {
                     }))
                 }, this.time)
 
-                if (this._emitter && isFunction(this._emitter.declare)) {
-                    // 通知外界我需要参数
-                    this._emitter.declare(this._id, this.descriptor, this.time, data => {
-                        clearTimeout(ticket)
-                        resolve(data || {})
-                    })
-                }
+                // 通知外界我需要数据
+                this._commit('interact-request')
+
+                // 订阅外界数据变化, 需要FlowInstance.dispatch('interact',data)
+                this.root.instance.subscribeInteractReponse(function (data) {
+                    clearTimeout(ticket)
+                    resolve(data || {})
+                })            
             })
         }
         return this.fn

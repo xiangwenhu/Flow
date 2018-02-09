@@ -80,6 +80,8 @@ const getActivity = function getActivity(act) {
             return activity
         case 'interact':
             activity = new InteractActivity(act.descriptor, act.time, act.message)
+            activity.name = act.name
+            activity.descriptor = act.descriptor
             return activity
         case 'race':
             if (Array.isArray(act.children)) {

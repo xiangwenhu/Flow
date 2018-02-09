@@ -23,16 +23,29 @@ io.on('connection', client => {
         const activity = ActivityFactoty.get(data),
             instance = new FlowInstance(activity)
 
-        // 订阅消息   
+        // 订阅status  
         instance.subscribe(function (activity, root) {
             client.emit('status', activity._id, instance.getProgress())
+        })
+
+        // 订阅interact交互
+        instance.subscribeInteractRequest((activity, root) => {
+            if (root.instance === instance) {
+                // 通知我要参数
+                client.emit('interact', activity.descriptor)
+            }
+        })
+
+        //收到交互参数
+        client.on('interact', data => {
+            instance.dispatchInteractReponse(data)
         })
 
         // 处理完毕后
         const ctx = {}
         instance.start(ctx).then(r => {
             client.emit('finish', r, ctx)
-        })    
+        })
     })
 })
 /*  flow进度demo:end   */

@@ -121,7 +121,7 @@ class SequenceActivity extends Activity {
                 // 把子活动compse然后依次执行
                 compose(children.map((ins, index) =>
                     async (context, next) => {
-                        let realContext = ins.context || context || ctx
+                        let realContext = ins.context ||  ctx
                         try {
                             if (ins.type === 'catch') {
                                 next()
