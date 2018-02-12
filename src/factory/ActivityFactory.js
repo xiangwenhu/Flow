@@ -1,187 +1,74 @@
-const AllActivity = require('../activity/AllActivity'),
-    BreakActivity = require('../activity/BreakActivity'),
-    CatchActivity = require('../activity/CatchActivity'),
-    AssertActivity = require('../activity/AssertActivity'),
-    AssertSequenceActivity = require('../activity/AssertSequenceActivity'),
-    CodeActivity = require('../activity/CodeActivity'),
-    DelayActivity = require('../activity/DelayActivity'),
-    FetchActivity = require('../activity/FetchActivity'),
-    IFElseActivity = require('../activity/IFElseActivity'),
-    InteractActivity = require('../activity/InteractActivity'),
-    SequenceActivity = require('../activity/SequenceActivity'),
-    TerminateActivity = require('../activity/TerminateActivity'),
-    WhileActivity = require('../activity/WhileActivity'),
-    RaceActivity = require('../activity/RaceActivity')
+const {
+    readdir
+} = require('../utils/fsex'),
+    path = require('path'),
+    mapping = require('../activity/.mapping.json')
 
-const getActivity = function getActivity(act) {
-    let activity = null,
-        children = null
-    switch (act.type) {
-        case 'all':
-            if (Array.isArray(act.children)) {
-                children = getAllActivity(act.children)
-            }
-            activity = new AllActivity(act.context, children)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'assert':
-            activity = new AssertActivity(act.context, act.code)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'assertsequence':
-            activity = new AssertSequenceActivity(act.context)
-            if (Array.isArray(act.children)) {
-                children = getAllActivity(act.children)
-            }
-            activity.name = act.name || activity.name
-            activity.set(act.assert, children)
-            return activity
-        case 'break':
-            activity = new BreakActivity(act.context)
-            activity.name = act.name || activity.name
-            activity.params(act.message)
-            return activity
-        case 'catch':
-            activity = new CatchActivity(act.context)
-            activity.params(act.message, act.code, act.ignore)
-            activity.name = act.name || activity.name
-            return activity
-        case 'code':
-            activity = new CodeActivity(act.context, act.code)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'delay':
-            activity = new DelayActivity()
-            activity.name = act.name || activity.name
-            activity.params(act.time)
-            return activity
-        case 'fetch':
-            activity = new FetchActivity(act.context)
-            activity.name = act.name || activity.name
-            activity.params(act.url, act.options, act.withHeaders)
-            return activity
-        case 'ifelse':
-            activity = new IFElseActivity(act.context)
-            if (act.if) {
-                activity.if(act.if.name, act.if.assert, getAllActivity(act.if.children))
-            }
-            // elseif是数组
-            if (Array.isArray(act.elseif)) {
-                act.elseif.forEach(at => activity.elseif(at.name, at.assert, getAllActivity(at.children)))
-            }
-            if (act.else) {
-                activity.else(act.else.name, act.if.assert, getAllActivity(act.else.children))
-            }
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'interact':
-            activity = new InteractActivity(act.descriptor, act.time, act.message)
-            activity.name = act.name
-            activity.descriptor = act.descriptor
-            return activity
-        case 'race':
-            if (Array.isArray(act.children)) {
-                children = getAllActivity(act.children)
-            }
-            activity = new RaceActivity(act.context, children)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'sequence':
-            if (Array.isArray(act.children)) {
-                children = getAllActivity(act.children)
-            }
-            activity = new SequenceActivity(act.context, children)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'terminate':
-            activity = new TerminateActivity(act.context)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        case 'while':
-            if (Array.isArray(act.children)) {
-                children = getAllActivity(act.children)
-            }
-            activity = new WhileActivity(act.context, act.assert, children)
-            activity.name = act.name || activity.name
-            activity.params()
-            return activity
-        default:
-            return null
+const props = {},
+    factory = {}
+
+// 属性过滤，这里仅仅限制属性，没有进行具体类型检查等等 TODO::属性检查等
+const filterProps = act => {
+    const map = props[act.type]
+    if (!map) {
+        return act
     }
+
+    const _act = {}
+    for (let p in map) {
+        _act[p] = act[p]
+    }
+    return _act
 }
 
-const getAllActivity = function getAllActivity(list) {
+// 加载各种Activity的Factory
+const loadFactory = async () => {
+    const dir = path.resolve(__dirname, '../activity/factory')
+    const fFiles = await readdir(dir)
+    fFiles.forEach(file => {
+        factory[`get${file.split('.')[0]}`] = require(`${dir}/${file}`)(factory, filterProps)
+    })
+}
+
+// 加载属性相关
+const loadProps = async () => {
+    const dir = path.resolve(__dirname, '../activity/props')
+    const fFiles = await readdir(dir)
+    fFiles.forEach(file => {
+        props[file.replace(/Activity.json/, '').toLowerCase()] = require(`${dir}/${file}`)
+    })
+}
+
+// 注册工厂和属性先关
+const register = async (app) => {
+    await loadFactory()
+    await loadProps()
+}
+
+// 获得市级的名字，比如ifelse对象应该是IFElse, assertsequence对应该死AssertSequence
+const getName = type => {
+    return mapping[type] || `${type[0].toUpperCase()}${type.slice(1)}`
+}
+
+const getActivity = act => {
+    return factory[`get${getName(act.type)}Activity`](act)
+}
+
+const getAllActivities = list => {
     if (!Array.isArray(list)) {
         return null
     }
     return list.map(act => getActivity(act)).filter(act => !!act)
 }
 
+factory.getAll = getAllActivities
+factory.get = getActivity
+
+register()
+
 module.exports = {
-    get(act) {
-        return getActivity(act)
-    },
-    getAll(list) {
-        return getAllActivity(list)
-    },
-    registerInteract() {
-
-    },
-    registerInteracts() {
-
-    },
-    getAllActivity(context, children) {
-        !children && (children = context, context = undefined)
-        return getActivity({
-            context,
-            type: 'all',
-            children
-        })
-    },
-    getTerminateActivity(context, message) {
-        !message && (message = context, context = undefined)
-        return getActivity({
-            context,
-            type: 'terminate',
-            message
-        })
-    },
-    getCodeActivity(context, code) {
-        !code && (code = context, context = undefined)
-        return getActivity({
-            context,
-            type: 'code',
-            code
-        })
-    },
-    getDelayActivity(time) {
-        return getActivity({
-            type: 'delay',
-            time
-        })
-    },
-    getFetchActivity(context, url, options) {
-        !options && (options = url, url = context, context = undefined)
-        return getActivity({
-            context,
-            type: 'fetch',
-            url,
-            options
-        })
-    },
-    getSequenceActivity(context, children) {
-        !children && (children = context, context = undefined)
-        return getActivity({
-            context,
-            type: 'sequence',
-            children
-        })
-    }
+    filterProps,
+    factory,
+    getAll: getAllActivities,
+    get: getActivity
 }

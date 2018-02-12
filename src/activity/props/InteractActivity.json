@@ -1,0 +1,7 @@
+{
+    "type": "string",
+    "context": "object",   
+    "descriptor": "object",
+    "time": "number",
+    "message": "string"
+}

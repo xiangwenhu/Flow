@@ -19,8 +19,6 @@ class Activity extends Item {
         this.ctxName = 'ctx'
         // 执行函数res的变量名
         this.resName = 'res'
-        // 全局变量
-        this.globalName = '_global_'
         // 基本类型
         this.type = 'activity'
         // Activity的名字
@@ -54,9 +52,31 @@ class Activity extends Item {
         return this._status
     }
 
+    /** 
+     * 获得所在FlowInstance
+     */
+    getInstance() {
+        if (this.root && isFunction(this.root.getInstance)) {
+            return this.root.getInstance()
+        }
+        return null
+    }
+
+    /** 
+     * 获得全局上下文
+     */
+    getGlobalContext() {
+        return this.getInstance().getGlobalContext
+    }
+
+    /**
+     * 提交对外事件
+     * @param {类型} type 
+     */
     _commit(type = 'status') {
-        if (this.root && isFunction(this.root._dispatch)) {
-            this.root._dispatch(type, this, this.root)
+        const instance = this.getInstance()
+        if (instance) {
+            instance.dispatch(type, this, this.root)
         }
     }
 
@@ -168,10 +188,11 @@ class Activity extends Item {
      * @param {其他参数} otherParams 
      */
     execute(ctx, res, ...otherParams) {
+        const globalContext = this.getGlobalContext()
         // 如果接受到终止命令
         if (this.needTerminate()) {
             this.status = ActivityStatus.TERMINATED
-            return Promise.reject(new ActivityError(this.root._global_.terminateMessage, this.type, this.name, true))
+            return Promise.reject(new ActivityError(globalContext.terminateMessage, this.type, this.name, true))
         }
         this._innerBuild()
         if (!isFunction(this.fn)) {
@@ -216,9 +237,9 @@ class Activity extends Item {
         return Activity.isActivity(activity)
     }
 
-    needTerminate(activity) {
-        const act = activity || this
-        return act.root._global_ && act.root._global_.terminateImmediate === true
+    needTerminate() {
+        const globalContext = this.getGlobalContext()
+        return globalContext && globalContext.terminateImmediate === true
     }
 
     isRoot(activity) {

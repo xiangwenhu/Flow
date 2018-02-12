@@ -21,11 +21,6 @@
     当然也可以通过设置ctx，虽然context||ctx可以自己单独设置，可以合并参数
 * 进度视图
 * 人机交互 
-  **改进为，每次execute或者状态变更时，托管给FlowInstance去处理，处理完毕后，处理结果应该进行某些操作后，return Promise.resolve(res)**
-    1. 对外通讯， 通过在Root Activity 挂载了_dispatch防范， _dispatch(activity, root)[应该是一个拷贝？属性的拷贝？]
-    2. 人工终止，Root的 _global_ 添加属性
-        this.activity._global_.terminateImmediate = true
-        this.activity._global_.terminateMessage = message
 * 超时处理
     Activity 开始执行的同时，开启计时器？ 
 * 遍历死循环 
@@ -93,6 +88,38 @@ FIXME: + 说明：
 
 XXX: + 说明：
 如果代码中有该标识，说明标识处代码虽然实现了功能，但是实现的方法有待商榷，希望将来能改进，要改进的地方会在说明中简略说明。
+
+
+
+
+FlowInstance
+1. activity生命周期内， Flow Instance能参与，各事件前后插入promise?订阅? 
+    TODO:: 
+    1. status的订阅，是被动的知晓
+    2. 如果干预，允许插入的是promise还是仅仅是普通函数
+
+Activity
+1. 交互属性优化，具体数据类型，先一级，多级支持直接写json对象
+    这个在于客户的处理，
+    ```
+    // type: number|string|boolean|object|date
+    descriptor:{
+        name: '姓名'  // 应该默认为字符串
+        age:{
+            type: int,
+            name: '年龄'
+        }
+    }
+    ```
+2. 属性验证，简单做，先白名单，后期升级（ok）
+3. 注册，扩展指定Activity文件家，和factory文件夹(ok)
+   Activity:Activity的目录
+    factory: Activity Factory
+    props: 属性验证
+    .mapping.json type特殊名字映射映射
+4. 订阅返回镜像，而不是activity,只返回数据属性，不返回方法，兄弟，父亲，根等？？？
+5. ctx的跟踪?
+6. 进度，异常信息，上下文？?传递？?
 
 
 

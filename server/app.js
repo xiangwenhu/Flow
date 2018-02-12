@@ -30,7 +30,7 @@ io.on('connection', client => {
 
         // 订阅interact交互
         instance.subscribeInteractRequest((activity, root) => {
-            if (root.instance === instance) {
+            if (root.getInstance() === instance) {
                 // 通知我要参数
                 client.emit('interact', activity.descriptor)
             }

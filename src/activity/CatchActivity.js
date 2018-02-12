@@ -3,7 +3,7 @@ const Activity = require('./Activity'),
 
 class CatchActivity extends Activity {
     constructor(context) {
-        super(context, undefined, true)
+        super(context)
         this.type = 'catch'
         this.ignore = false
         this.code = null

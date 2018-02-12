@@ -10,9 +10,16 @@ module.exports = class FlowInstance {
     constructor(activity) {
         this.listeners = {}
         this.id = uuid()
-        this.activity = activity
-        this.activity.instance = this
         this.enbaleLogger = true
+        this._connectActivity(activity)
+        this._isRuning = false
+    }
+
+    _connectActivity(activity) {
+        this.activity = activity
+        // 返回实例
+        this.activity.getInstance = () => this
+        // 订阅status变化事件      
         this.subscribe('status', (activity, root) => {
             logger.info({
                 id: activity._id,
@@ -24,16 +31,18 @@ module.exports = class FlowInstance {
     }
 
     /**
-     * 启动实例
+     * z
      * @param {上下文} context 
      * @param {全局上下文} globalContext 
      */
     start(context, globalContext = {}) {
-        this.activity._global_ = globalContext
-        this.activity._dispatch = (...args) => {
-            this.dispatch(...args)
+        if (this._isRuning) {
+            throw new Error('实例正在运行中')
         }
-        return this.activity.execute(context)
+        this._isRuning = true     
+        this.context = context
+        this.globalContext = globalContext
+        return this.activity.execute(this.context)
     }
 
     /**
@@ -41,8 +50,8 @@ module.exports = class FlowInstance {
      * @param {消息} message 
      */
     stop(message = '用户终止') {
-        this.activity._global_.terminateImmediate = true
-        this.activity._global_.terminateMessage = message
+        this.globalContext.terminateImmediate = true
+        this.globalContext.terminateMessage = message
     }
 
     /**
@@ -60,6 +69,10 @@ module.exports = class FlowInstance {
         }
     }
 
+    /**
+     * 分发interact的response，外界通知Activity
+     * @param {参数} args 
+     */
     dispatchInteractReponse(...args) {
         this.dispatch('interact-response', ...args)
     }
@@ -97,10 +110,18 @@ module.exports = class FlowInstance {
         }
     }
 
+    /**
+     * 订阅Activity交互请求事件
+     * @param {监听事件} listener 
+     */
     subscribeInteractRequest(listener) {
         this.subscribe('interact-request', listener)
     }
 
+    /**
+     * 订阅外界交互响应事件，外界通知Activity
+     * @param {监听事件} listener 
+     */
     subscribeInteractReponse(listener) {
         this.subscribe('interact-response', listener)
     }

@@ -36,7 +36,7 @@ class Interactctivity extends Activity {
                 this._commit('interact-request')
 
                 // 订阅外界数据变化, 需要FlowInstance.dispatch('interact',data)
-                this.root.instance.subscribeInteractReponse(function (data) {
+                this.root.getInstance().subscribeInteractReponse(function (data) {
                     clearTimeout(ticket)
                     resolve(data || {})
                 })            

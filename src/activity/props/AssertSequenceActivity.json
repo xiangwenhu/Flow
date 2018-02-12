@@ -1,0 +1,6 @@
+{
+    "type": "string",
+    "context": "object",
+    "assert": "string",
+    "children": "array"
+}
