@@ -3,7 +3,6 @@
 1. 并不是所有Activity都有children, sequence,all,ifelse, while有，都继承于sequence
 2. 目前的错误捕捉，你可进行简单的代码处理，然后选择继续流程和抛出异常
 3. 每个Activity变成子活动后，会有parent，pre,next属性
-4. 新开发一个新的Activity需要在ActivityFactory注册，方便json对象转为Activity
 
 ## 待解决或者思考
 ### Level One
@@ -14,13 +13,13 @@
 * 日志
     引入log4js日志，日志会一直往外抛出，但是只会记录一次
 * break
-    这里的break不是终止while等语句，而是用来终止一个sequnce
+    这里的break不是终止while等语句，而是用来终止一个sequence
 * terminate
     终结整个流程
     现在有一个专门TerminateAction用来终止流程，原理是抛出一个Promise.reject(ActivityError), ActivityError是一层一层往外抛出到达终止流程
     当然也可以通过设置ctx，虽然context||ctx可以自己单独设置，可以合并参数
-* 进度视图
-* 人机交互 
+* 进度视图 (v1 ok)
+* 人机交互(v1 ok) 
 * 超时处理
     Activity 开始执行的同时，开启计时器？ 
 * 遍历死循环 
@@ -99,7 +98,7 @@ FlowInstance
     2. 如果干预，允许插入的是promise还是仅仅是普通函数
 
 Activity
-1. 交互属性优化，具体数据类型，先一级，多级支持直接写json对象
+1. 交互属性优化，具体数据类型，先一级，多级支持直接写json对象(v1, ok)
     这个在于客户的处理，
     ```
     // type: number|string|boolean|object|date
@@ -111,8 +110,8 @@ Activity
         }
     }
     ```
-2. 属性验证，简单做，先白名单，后期升级（ok）
-3. 注册，扩展指定Activity文件家，和factory文件夹(ok)
+2. 属性验证，简单做，先白名单，后期升级（v1 ok）
+3. 注册，扩展指定Activity文件家，和factory文件夹(v1 ok)
    Activity:Activity的目录
     factory: Activity Factory
     props: 属性验证
