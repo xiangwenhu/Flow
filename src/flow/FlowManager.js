@@ -94,6 +94,4 @@ class FlowManager {
     }
 }
 
-
-
 module.exports = FlowManager

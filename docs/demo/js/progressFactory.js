@@ -13,7 +13,7 @@ const progressFactory = {
             result = `
             <ul>
                 <li data-id='${data.id}' class='${data.status}' data-type='${data.type}'>
-                ${data.name} - ${this.mapping[data.status]} ${data.status === 'EXECUTING'? '<img src="/img/loading.gif">':''}
+                ${data.name} - ${this.mapping[data.status]} ${data.status === 'EXECUTING'? '<img src="img/loading.gif">':''}
                 </li>
                 ${childrenHTML}
             </ul>
@@ -30,7 +30,7 @@ const progressFactory = {
         return '<ul>' + children.map(child => {
             return `              
                 <li data-id='${child.id}' class='${child.status}' data-type='${child.type}'>
-                    ${child.name} - ${this.mapping[child.status]} ${child.status === 'EXECUTING'? '<img src="/img/loading.gif">':''}
+                    ${child.name} - ${this.mapping[child.status]} ${child.status === 'EXECUTING'? '<img src="img/loading.gif">':''}
                     ${this.buildChildren(child.children)}
                 </li>                
             `

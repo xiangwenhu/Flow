@@ -11,7 +11,7 @@ const Koa = require('koa'),
     FlowInstance = require('../src/flow/FlowInstance')
 
 const app = new Koa()
-app.use(static(path.resolve(__dirname + '/../client')))
+app.use(static(path.resolve(__dirname + '/../docs')))
 app.use(koaBody())
 
 /*  flow进度demo:begin   */

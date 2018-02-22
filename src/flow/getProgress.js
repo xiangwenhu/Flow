@@ -3,6 +3,7 @@ const {
 } = require('../utils/typeChecker')
 
 const getChildren = function getChildren(activity) {
+    // 优先使用自定义的getChildren方法
     if (isFunction(activity.getChildren)) {
         return activity.getChildren()
     }
