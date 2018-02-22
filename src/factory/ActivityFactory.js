@@ -2,6 +2,7 @@ const {
     readdir
 } = require('../utils/fsex'),
     path = require('path'),
+    baseProps = require('../activity/props/.base.json'),
     mapping = require('../activity/.mapping.json')
 
 const props = {},
@@ -9,12 +10,8 @@ const props = {},
 
 // 属性过滤，这里仅仅限制属性，没有进行具体类型检查等等 TODO::属性检查等
 const filterProps = act => {
-    const map = props[act.type]
-    if (!map) {
-        return act
-    }
-
-    const _act = {}
+    const map = Object.assign(props[act.type] || {}, baseProps),
+        _act = {}
     for (let p in map) {
         _act[p] = act[p]
     }

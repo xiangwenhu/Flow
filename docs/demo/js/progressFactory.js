@@ -9,11 +9,12 @@ const progressFactory = {
         EXCEPTION: '异常'
     },
     build(data, selector) {
+        data.status = data.status || 'UNINITIALIZED'
         let childrenHTML = Array.isArray(data.children) ? this.buildChildren(data.children) : '',
             result = `
             <ul>
-                <li data-id='${data.id}' class='${data.status}' data-type='${data.type}'>
-                ${data.name} - ${this.mapping[data.status]} ${data.status === 'EXECUTING'? '<img src="img/loading.gif">':''}
+                <li data-id='${data.id}' class='${data.status}' data-type='${data.type}'  title = "${ data.error?this.escape(data.error.message + data.error._stack): ''}" >
+                ${data.name} - ${this.mapping[data.status]} ${data.status === 'EXECUTING'? '<img src="/demo/img/loading.gif">':''}
                 </li>
                 ${childrenHTML}
             </ul>
@@ -28,12 +29,35 @@ const progressFactory = {
             return ''
         }
         return '<ul>' + children.map(child => {
+            child.status = child.status || 'UNINITIALIZED'
             return `              
-                <li data-id='${child.id}' class='${child.status}' data-type='${child.type}'>
-                    ${child.name} - ${this.mapping[child.status]} ${child.status === 'EXECUTING'? '<img src="img/loading.gif">':''}
+                <li data-id='${child.id}' class='${child.status}' data-type='${child.type}' title = "${child.error? this.escape(child.error.message + child.error._stack): ''}">
+                    ${child.name} - ${this.mapping[child.status]} ${child.status === 'EXECUTING'? '<img src="/demo/img/loading.gif">':''}
                     ${this.buildChildren(child.children)}
                 </li>                
             `
         }).join('') + '</ul>'
+    },
+    markError(err, data) {
+        if (err && err.activityId) {
+            if (data.id == err.activityId) {
+                data.error = err
+            }
+            if (Array.isArray(data.children)) {
+                data.children.forEach(child => {
+                    this.markError(err, child)
+                })
+            }
+        }
+        return data
+    },
+    escape(str) {
+        if (!str) {
+            return str
+        }
+        return str.replace(/"/g, '\\&quot;')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
     }
 }

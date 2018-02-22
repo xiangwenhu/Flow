@@ -33,10 +33,12 @@
                 code: 'console.log(res),ctx.res = res'
             },{
                 type: 'delay',
+                name: '延时2s',
                 time: 2000
             }]
         }        
     </textarea>
+    <input type="button" value="预览" id='btnPreview' />
     <input type="button" value="执行" id='btnExecute' />
     <br>
     <input type="button" value="确认参数" id='btnPass' />
@@ -71,6 +73,12 @@
         })
 
         let areaEl = document.querySelector('#flowArea')
+
+
+        btnPreview.addEventListener('click',function(){
+            progressFactory.build(eval('(' + areaEl.value.trim() + ')'), '#progressEl')
+        })
+
         btnExecute.addEventListener('click', function () {
             socket.emit('invoke', eval('(' + areaEl.value.trim() + ')'))
         })

@@ -42,9 +42,13 @@ io.on('connection', client => {
         })
 
         // 处理完毕后
+
         const ctx = {}
         instance.start(ctx).then(r => {
             client.emit('finish', r, ctx)
+        }).catch(err => {
+            client.emit('err', err, instance.getProgress())
+            console.log(err)
         })
     })
 })

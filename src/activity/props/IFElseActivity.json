@@ -1,8 +1,5 @@
 {
-    "type": "string",
-    "context": "object",
     "if": "object",
     "elseif": "array",
     "else": "object"
-
 }

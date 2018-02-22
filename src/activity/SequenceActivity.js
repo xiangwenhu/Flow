@@ -121,7 +121,7 @@ class SequenceActivity extends Activity {
                 // 把子活动compse然后依次执行
                 compose(children.map((ins, index) =>
                     async (context, next) => {
-                        let realContext = ins.context ||  ctx
+                        let realContext = ins.context || ctx
                         try {
                             if (ins.type === 'catch') {
                                 next()
@@ -157,11 +157,12 @@ class SequenceActivity extends Activity {
                                     type: ins.type,
                                     name: ins.name,
                                     terminated: false,
-                                    logged: err.logged
+                                    logged: err.logged,
+                                    activityId: ins._id
                                 })
                             }
                             // 防止错误重复记录
-                            !err.logged && logger.error(err)
+                            !err.logged && logger.error(err) && (err.logged = true)
                             // 如果此错误有标记为终止流程，直接往外抛出
                             if (err.terminated === true) {
                                 return reject(err)

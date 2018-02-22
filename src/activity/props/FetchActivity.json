@@ -1,6 +1,4 @@
 {
-    "type": "string",
-    "context": "object",
     "url": "string",
     "options": "object",
     "withHeaders": "boolean"

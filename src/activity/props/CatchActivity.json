@@ -1,6 +1,4 @@
 {
-    "type": "string",
-    "context": "object",
     "ignore": "boolean",
     "code": "string",
     "message": "message"

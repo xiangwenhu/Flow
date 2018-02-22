@@ -12,6 +12,10 @@ socket.on('finish', (r, ctx) => {
 })
 
 let areaEl = document.querySelector('#flowArea')
+btnPreview.addEventListener('click', function () {
+    progressFactory.build(eval('(' + areaEl.value.trim() + ')'),'#progressEl')
+})
+
 btnExecute.addEventListener('click', function () {
     socket.emit('invoke', eval('(' + areaEl.value.trim() + ')'))
 })
