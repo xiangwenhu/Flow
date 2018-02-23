@@ -1,7 +1,6 @@
-const ActivityFactory = require('../src/factory/ActivityFactory')
-
-const config = {
+ {
     type: 'while',
+    name: '如果ctx.count小于5，加加',
     context: {
         count: 1
     },
@@ -20,11 +19,3 @@ const config = {
         code: 'console.log("count:" + ctx.count)'
     }]
 }
-
-const w = ActivityFactory.get(config)
-
-
-
-w.execute({
-    count: 0
-})

@@ -5,7 +5,7 @@ class WhileActivity extends SequenceActivity {
     constructor(context, condition, children) {
         super(context, children)
         this.condition = condition
-        this.assert = this.getAssert(condition)
+        this.assert = this.getAssert(condition)       
     }
 
     build(condition, children) {
@@ -14,6 +14,10 @@ class WhileActivity extends SequenceActivity {
         if (condition) {
             this.assert = this.getAssert(this.condition)
         }
+        // 设置assert的根节点和编译assert
+        this.assert.root = this.root
+        this.assert.build()
+
         // 构建子活动
         this.children = children || this.children
         // 检查子活动
@@ -40,8 +44,7 @@ class WhileActivity extends SequenceActivity {
 
     getAssert(condition) {
         // 创建断言Activity
-        const assert = new AssertActivity(undefined, condition)
-        assert.build()
+        const assert = new AssertActivity(undefined, condition)     
         return assert
     }
 }

@@ -1,8 +1,4 @@
-const ActivityFactory = require('../src/factory/ActivityFactory'),
-    FlowManager = require('../src/flow/FlowManager')
-
-
-const config = {
+{
     type: 'ifelse',
     name: 'if else 测试',
     context: {
@@ -32,8 +28,6 @@ const config = {
             }, {
                 type: 'code',
                 code: 'console.log("连续睡觉二 code Activity")'
-            }, {
-
             }]
         }, {
             type: 'code',
@@ -90,27 +84,3 @@ const config = {
         }]
     }
 }
-
-const fInstance = FlowManager.getInstance()
-
-
-
-const globalContext = {
-    gCount: 5
-}
-
-console.log(new Date().toLocaleString())
-const act = ActivityFactory.get(config)
-
-try {
-    fInstance.start(act, undefined, globalContext).
-    catch(
-        err => console.log('rrrr', err)
-    )
-} catch (err) {
-    console.log('ttyty', err)
-}
-
-setTimeout(function () {
-    fInstance.stop(act._id)
-}, 3100)

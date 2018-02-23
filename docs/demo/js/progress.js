@@ -10,6 +10,11 @@ socket.on('status', (id, data) => {
 socket.on('finish', (r, ctx) => {
     console.log(r, ctx)
 })
+// 异常时
+socket.on('err', (err, data) => {
+    const d = progressFactory.markError(err, data)
+    progressFactory.build(data, '#progressEl')
+})
 
 let areaEl = document.querySelector('#flowArea')
 btnPreview.addEventListener('click', function () {

@@ -24,6 +24,11 @@ class AssertSequenceActivity extends SequenceActivity {
             this.set(condition, children)
         }
         this.beforeBuild()
+
+        //先build assert
+        this.assert.root = this.root
+        this.assert.build(condition)
+
         this.fn = (...args) => {
             const f = this.children[0]
             return f.type === 'assert' && f.status === ActivityStatus.EXECUTED ?
@@ -34,8 +39,9 @@ class AssertSequenceActivity extends SequenceActivity {
     }
 
     set(condition, children) {
-        const assert = new AssertActivity()
-        assert.build(condition)
+        const assert = new AssertActivity()    
+        // 这里设置code，避免直接build 
+        assert.code = condition 
         assert.name = this.name
         this.assert = assert        
         this.children = [assert, ...children]

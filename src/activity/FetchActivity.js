@@ -1,6 +1,6 @@
 const fetch = require('node-fetch'),
     Activity = require('./Activity'),
-    replacer = require('../utils/dataReplacer')
+    Replacer = require('../utils/DataReplacer')
 
 class FetchActivity extends Activity {
     constructor(context) {
@@ -12,7 +12,7 @@ class FetchActivity extends Activity {
     build(url, options = {}, withHeaders) {
         this.withHeaders = withHeaders || this.withHeaders
         this.fn = (ctx, resObj, _global_) => {
-            const rp = new replacer({
+            const rp = new Replacer({
                 [this.ctxName]: this.context || ctx,
                 [this.globalName]: _global_,
                 [this.resName]: resObj

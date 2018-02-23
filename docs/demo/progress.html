@@ -7,71 +7,68 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>进度演示</title>
     <link href="css/progressShow.css" type="text/css" rel="stylesheet">
-    <script src="/socket.io/socket.io.js"></script>    
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0
+        }  
+        #container {
+            height: 90%;
+            display: flex;
+            justify-content: space-around
+        }
+
+        #left {
+            flex: 0 0 40%
+        }
+
+        #progressEl {
+            flex: 0 0 50%
+        }
+    </style>
 </head>
 
 <body>
-    <div>
-        <textarea id='flowArea' style="width:100%; height:300px; overflow-y:auto">               
-                {
-                    type: 'sequence',
-                    name: '玛丽玛丽',
-                    children: [{
-                        type: 'code',
-                        name: '输出当前日期',
-                        code: 'console.log(new Date().toLocaleString())'
-                    }, {
-                        type: 'delay',
-                        name: '延时2秒',
-                        time: 2000
-                    }, {
-                        type: 'code',
-                        name: '输出当前日期',
-                        code: 'console.log(new Date().toLocaleString())'
-                    }, {
-                        type: 'catch',
-                        name: '错误捕捉',
-                        code: 'ctx.count = 5',
-                        ignore: false,
-                        message: '爱爱的错误'
-                    }, {
-                        type: 'sequence',
-                        name: 'break测试',
-                        children: [{
-                            type: 'code',
-                            name: '输出11111',
-                            code: 'console.log(11111)'
-                        }, {
-                            type: 'delay',
-                            name: '延时4秒',
-                            time: 4000
-                        }, {
-                            type: 'break',
-                            name: '跳出break测试',
-                            message: '哈喽'
-                        }, {
-                            type: 'code',
-                            name: '输出22222',
-                            code: 'console.log(22222)'
-                        }]
-                    }, {
-                        type: 'code',
-                        name: '输出33333',
-                        code: 'console.log(33333)'
-                    }, {
-                        type: 'delay',
-                        name: '延时5秒',
-                        time: 5000
-                    }]
-                }
-        </textarea>
-        <input type="button" id='btnPreview' value='预览'>
-        <input type="button" id='btnExecute' value='执行'>
-    </div>
-    <div id='progressEl'>
+    <div id='title'>
 
     </div>
+    <div id='container'>
+        <div id='left'>
+            <textarea id='flowArea' style="width:100%; height:90%; overflow-y:auto">
+
+            </textarea>
+        </div>
+        <div>
+            <input type="button" id='btnPreview' value='预览'>
+            <input type="button" id='btnExecute' value='执行'>
+        </div>
+        <div id='progressEl'>
+
+        </div>
+    </div>
 </body>
+<script>
+    const loc = document.location
+    if (loc.search) {
+        let src = 'config/' + queryString('src') || 'default.js'
+        fetch(src)
+            .then(res => res.text())
+            .then(data => {
+                flowArea.value = data
+            })
+    }
+
+    function queryString(name) {
+        var result = location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+</script>
 <script src='js/progressFactory.js'></script>
 <script src='js/progress.js'></script>
 

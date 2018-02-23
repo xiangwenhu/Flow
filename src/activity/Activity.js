@@ -112,7 +112,7 @@ class Activity extends Item {
      */
     afterAdded(parent) {}
 
-    params(...args) {
+    params(...args) {        
         this._preFn = () => this.build(...args)
         return this
     }

@@ -1,46 +1,38 @@
-const ActivityFactory = require('../src/factory/ActivityFactory'),
-    getProgress = require('../src/flow/getProgress')
-
-const config = {
+{
     type: 'sequence',
     name: '玛丽玛丽',
     children: [{
         type: 'code',
-        code: 'console.log(new Datessss().toLocaleString())'
+        name: '输出当前时间',
+        code: 'console.log(new Date().toLocaleString())'
     }, {
         type: 'delay',
+        name: '延时2s',
         time: 2000
     }, {
         type: 'code',
+        name: '输出当前时间',
         code: 'console.log(new Date().toLocaleString())'
     }, {
         type: 'catch',
+        name: '错误捕捉',
         code: 'ctx.count = 5',
         ignore: false,
         message: '爱爱的错误'
     }, {
-        type: 'code',
-        code: 'ctx.count +=  xxx/5'
+        type: 'terminate',
+        name: '终止流程',
+        message: '哈哈'
     }, {
         type: 'code',
+        name: '输出上下文',
         code: 'console.log(JSON.stringify(ctx))'
     }, {
         type: 'catch',
+        name: '错误捕捉',
         code: 'console.log("xx的错误")',
         ignore: false,
         message: 'xx'
     }]
 }
 
-const activity = ActivityFactory.get(config)
-
-
-
-activity.execute({}).catch(err => {
-    const c = activity
-    console.log(err.toString())
-})
-
-const flow = getProgress(activity)
-
-console.log(flow)

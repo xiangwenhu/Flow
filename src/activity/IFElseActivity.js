@@ -99,8 +99,9 @@ class IFElseActivity extends SequenceActivity {
 
     _getChild(name, condition, children) {
         const child = new AssertSequenceActivity()
+        child.root = this.root
         child.name = name
-        child.build(condition, children)
+        child.set(condition, children)
         return child
     }
 }

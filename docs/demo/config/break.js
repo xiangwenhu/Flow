@@ -1,9 +1,6 @@
-const ActivityFactory = require('../src/factory/ActivityFactory')
-
-
-const config = {
+{
     type: 'sequence',
-    name: '玛丽玛丽',
+    name: 'break测试',
     children: [{
         type: 'code',
         name: '输出当前日期',
@@ -52,10 +49,3 @@ const config = {
         time: 5000
     }]
 }
-
-const activity = ActivityFactory.get(config)
-
-activity.execute({}).catch(err => {
-    const c = activity
-    console.log(err.toString())
-})

@@ -10,7 +10,7 @@ class TerminateActivity extends Activity {
 
     build(message) {
         this.message = message || this.message
-        this.fn = () => Promise.reject(new ActivityError(this.message, this.type, this.name, true))
+        this.fn = () => Promise.reject(new ActivityError(this.message, this.type, this.name, true, this._id))
         return this.fn
     }
 }

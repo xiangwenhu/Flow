@@ -6,7 +6,7 @@ const util = require('util'),
             this.type = message.type
             this.name = message.name
             this.terminated = message.terminated
-            this.activityId = message.activityId
+            this.activityId = message.activityId           
         } else {
             // 消息
             this.message = message || 'Error'
@@ -19,6 +19,7 @@ const util = require('util'),
             // 发生错误的Activity的id
             this.activityId = activityId
         }
+        this._stack = this.stack
     }
 util.inherits(ActivityError, Error)
 ActivityError.prototype.name = 'ActivityError'

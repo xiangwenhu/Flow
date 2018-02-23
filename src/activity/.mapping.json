@@ -1,4 +1,4 @@
 {
-    "assertsequence": "AssertSequenceActivity",
-    "ifelse":"IFElseActivity"
+    "assertsequence": "AssertSequence",
+    "ifelse":"IFElse"
 }

@@ -124,7 +124,7 @@ class SequenceActivity extends Activity {
                         let realContext = ins.context || ctx
                         try {
                             if (ins.type === 'catch') {
-                                next()
+                                index === children.length - 1 ? resolve(res) : next()
                             } else {
                                 // 执行前钩子函数
                                 isFunction(ins.beforeExecute) && ins.beforeExecute.apply(ins, realContext, res, _global_, ...otherParams)
@@ -135,7 +135,7 @@ class SequenceActivity extends Activity {
                                 // 需要停止 ?? 转移到 Activity 里面去？
                                 if (self.needTerminate(self)) {
                                     self.status = ins.status = ActivityStatus.TERMINATED;
-                                    return reject(new ActivityError(self.root._global_.terminateMessage, this.type, this.name, true))
+                                    return reject(new ActivityError(self.root._global_.terminateMessage, this.type, this.name, true, ins._id))
                                 }
 
                                 // 如果是BreackActivity结束当前Sequence
