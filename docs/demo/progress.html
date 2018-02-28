@@ -14,7 +14,8 @@
             height: 100%;
             width: 100%;
             margin: 0
-        }  
+        }
+
         #container {
             height: 90%;
             display: flex;
@@ -37,9 +38,7 @@
     </div>
     <div id='container'>
         <div id='left'>
-            <textarea id='flowArea' style="width:100%; height:90%; overflow-y:auto">
-
-            </textarea>
+            <textarea id='flowArea' style="width:100%; height:90%; overflow-y:auto" placeholder="直接输入或者拖拽文本文件(js,json,txt)"></textarea>
         </div>
         <div>
             <input type="button" id='btnPreview' value='预览'>
@@ -68,6 +67,23 @@
         }
         return result[1];
     }
+
+    function handleFiles(files) {
+        if (files.length) {
+            let file = files[0],
+                reader = new FileReader()
+            reader.onload = () => {               
+                flowArea.value = reader.result
+            }
+            reader.readAsText(file)
+        }
+    }
+
+    flowArea.addEventListener('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        handleFiles(e.dataTransfer.files)
+    })
 </script>
 <script src='js/progressFactory.js'></script>
 <script src='js/progress.js'></script>
