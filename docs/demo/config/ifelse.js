@@ -6,7 +6,7 @@
     },
     if: {
         assert: 'ctx.count  <= 5',
-        name: '如果count小于5',
+        name: '如果count小于等于5',
         children: [{
             type: 'delay',
             name: 'delay 5 秒',
@@ -27,6 +27,7 @@
                 }]
             }, {
                 type: 'code',
+                name: '输出连续睡觉二 code Activity',
                 code: 'console.log("连续睡觉二 code Activity")'
             }]
         }, {
@@ -37,7 +38,7 @@
     },
     elseif: [{
         assert: 'ctx.count <=10 ',
-        name: '如果count小于10',
+        name: '如果count小于等于10',
         children: [{
             type: 'delay',
             name: 'delay 10 秒',
@@ -49,7 +50,7 @@
         }]
     }, {
         assert: 'ctx.count <=15 ',
-        name: '如果count小于15',
+        name: '如果count小于等于15',
         children: [{
             type: 'delay',
             name: 'delay 15秒',
@@ -61,7 +62,7 @@
         }]
     }, {
         assert: 'ctx.count <=25 ',
-        name: '如果count小于25',
+        name: '如果count小于等于25',
         children: [{
             type: 'delay',
             name: 'delay 25秒',
@@ -73,6 +74,7 @@
         }]
     }],
     else: {
+        name: '如果count大于25',
         children: [{
             type: 'delay',
             name: 'delay 50秒',

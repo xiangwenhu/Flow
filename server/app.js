@@ -28,24 +28,22 @@ io.on('connection', client => {
             client.emit('status', activity._id, instance.getProgress())
         })
 
-        // 订阅interact交互
+        //订阅interact交互
         instance.subscribeInteractRequest((activity, root) => {
             if (root.getInstance() === instance) {
                 // 通知我要参数
                 client.emit('interact', activity.descriptor)
             }
         })
-
         //收到交互参数
         client.on('interact', data => {
-            instance.dispatchInteractReponse(data)
+            instance.dispatchInteractResponse(data)
         })
 
-        // 处理完毕后
-
+        // 启动并监听执行和错误
         const ctx = {}
-        instance.start(ctx).then(r => {
-            client.emit('finish', r, ctx)
+        instance.start(data.context || ctx).then(r => {
+            client.emit('finish', r, data.context)
         }).catch(err => {
             client.emit('err', err, instance.getProgress())
             console.log(err)

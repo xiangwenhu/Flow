@@ -73,7 +73,7 @@ module.exports = class FlowInstance {
      * 分发interact的response，外界通知Activity
      * @param {参数} args 
      */
-    dispatchInteractReponse(...args) {
+    dispatchInteractResponse(...args) {
         this.dispatch('interact-response', ...args)
     }
 

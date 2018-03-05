@@ -13,11 +13,13 @@ socket.on('finish', (r, ctx) => {
 // 异常时
 socket.on('err', (err, data) => {
     const d = progressFactory.markError(err, data)
+    progressFactory.fromServer  = true
     progressFactory.build(data, '#progressEl')
 })
 
 let areaEl = document.querySelector('#flowArea')
 btnPreview.addEventListener('click', function () {
+    progressFactory.fromServer = false
     progressFactory.build(eval('(' + areaEl.value.trim() + ')'),'#progressEl')
 })
 
@@ -27,5 +29,6 @@ btnExecute.addEventListener('click', function () {
 
 
 function renderFlow(data) {
+    progressFactory.fromServer = true
     progressFactory.build(data, '#progressEl')
 }

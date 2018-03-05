@@ -8,7 +8,11 @@ const progressFactory = {
         EXECUTED: '执行完毕',
         EXCEPTION: '异常'
     },
+    fromServer: true,
     build(data, selector) {
+        if (!this.fromServer) {
+            this.adjust(data)
+        }
         data.status = data.status || 'UNINITIALIZED'
         let childrenHTML = Array.isArray(data.children) ? this.buildChildren(data.children) : '',
             result = `
@@ -59,5 +63,39 @@ const progressFactory = {
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
+    },
+    adjust(data) {
+        if (this.adjuster[data.type]) {
+            this.adjuster[data.type](data)
+        }
+        if (data.children) {
+            data.children.forEach(child => this.adjust(child))
+        }
+    },
+    adjuster: {
+        ifelse: function (data) {
+            let children = []
+            if (data.if) {
+                children.push({
+                    name: data.if.name,
+                    children: data.if.children
+                })
+            }
+            if (data.elseif && Array.isArray(data.elseif)) {
+                data.elseif.forEach(v => {
+                    children.push({
+                        name: v.name,
+                        children: v.children
+                    })
+                })
+            }
+            if (data.else) {
+                children.push({
+                    name: data.else.name,
+                    children: data.else.children
+                })
+            }
+            data.children = children
+        }
     }
 }
