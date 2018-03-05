@@ -10,17 +10,19 @@ socket.on('status', (id, data) => {
 socket.on('finish', (r, ctx) => {
     console.log(r, ctx)
 })
+socket.on('context', context => console.log('context:', context))
+
 // 异常时
 socket.on('err', (err, data) => {
     const d = progressFactory.markError(err, data)
-    progressFactory.fromServer  = true
+    progressFactory.fromServer = true
     progressFactory.build(data, '#progressEl')
 })
 
 let areaEl = document.querySelector('#flowArea')
 btnPreview.addEventListener('click', function () {
     progressFactory.fromServer = false
-    progressFactory.build(eval('(' + areaEl.value.trim() + ')'),'#progressEl')
+    progressFactory.build(eval('(' + areaEl.value.trim() + ')'), '#progressEl')
 })
 
 btnExecute.addEventListener('click', function () {

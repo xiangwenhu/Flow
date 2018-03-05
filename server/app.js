@@ -24,9 +24,10 @@ io.on('connection', client => {
             instance = new FlowInstance(activity)
 
         // 订阅status  
-        instance.subscribe(function (activity, root) {
-            client.emit('status', activity._id, instance.getProgress())
-        })
+        instance.subscribe((activity, root) => client.emit('status', activity._id, instance.getProgress()))
+
+        // 订阅context变化，现在的context变化时基于status变化的，
+        instance.subscribe('context', context => client.emit('context', context))
 
         //订阅interact交互
         instance.subscribeInteractRequest((activity, root) => {

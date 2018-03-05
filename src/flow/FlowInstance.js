@@ -27,6 +27,9 @@ module.exports = class FlowInstance {
                 name: activity.name
             })
             logger.info(this.getProgress())
+
+            // TODO:: 改进context监听机制
+            this.dispatch('context', this.context)
         })
     }
 
