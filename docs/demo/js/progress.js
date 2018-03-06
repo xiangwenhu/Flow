@@ -7,8 +7,9 @@ socket.on('connection', () => {
 socket.on('status', (id, data) => {
     renderFlow(data)
 })
-socket.on('finish', (r, ctx) => {
-    console.log(r, ctx)
+socket.on('finish', (r, ctx) => {  
+    console.log('执行结果:', r)
+    console.log('执行上下文', ctx)
 })
 socket.on('context', context => console.log('context:', context))
 

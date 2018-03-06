@@ -82,7 +82,6 @@ XXX: + 说明：
 
 
 * ctx的跟踪?
-* 进度，异常信息，上下文？?传递？?
 * mongoDB访问的Activity   
 * Fetch的升级Activity  
     1. cookie的记录
@@ -97,13 +96,14 @@ XXX: + 说明：
 * code里面有resolve|reject代码
 * 输入的数据保密？？
 * 订阅返回镜像，而不是activity,只返回数据属性，不返回方法，兄弟，父亲，根等？？？
-* ctx的跟踪?
-* 进度，异常信息，上下文？?传递？?
-* mongoDB访问的Activity   
+* ctx的跟踪? (基于status的版本，等待升级为监听context)
+* 进度，异常信息，上下文？?传递？?(ok)
+* mongoDB访问的Activity 
+    1. ES Next http://mongodb.github.io/node-mongodb-native/3.0/reference/ecmascriptnext/crud/
 * Fetch的升级Activity  
-    1. cookie的记录
-    2. header的获取
-* 执行前预览图    
+    1. cookie的记录 ==> 通过withHeaders能获取到
+    2. header的获取 ==> 通过withHeaders能获取到
+* 执行前预览图 (ok)    
 * 便捷的属性拷贝，不用每次添加新属性都去修改factory的方法
 
 
