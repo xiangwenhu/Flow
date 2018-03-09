@@ -4,7 +4,8 @@ module.exports = (factory, props) => act => {
     act = props(act)
 
     //Activity的构造函数
-    const activity = new MongoActivity(act.context, act.auth, act.commands)
+    const activity = new MongoActivity(act.context, act.auth, act.operations)
     activity.name = act.name
+    activity.mode = act.mode || activity.mode
     return activity
 }

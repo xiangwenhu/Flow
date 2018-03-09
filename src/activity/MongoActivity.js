@@ -3,36 +3,36 @@ const Activity = require('./Activity'),
     {
         isFunction
     } = require('../utils/typeChecker'),
-    MongoClient = require('mongodb').MongoClient
+    {
+        getFunction
+    } = require('../factory/FunctionFactory'),
+    promisePlus = require('../promise/plus'),
+    MongoClient = require('mongodb').MongoClient,
+    Replacer = require('../utils/DataReplacer')
 
 class MongoActivity extends Activity {
-    constructor(context, auth, commands) {
+    constructor(context, auth, operations) {
         super(context)
         this.auth = auth
-        this.commands = commands
+        this.mode = 'all'
+        this.operations = operations
     }
 
-    build(commands) {
-        this.commands = commands || this.commands
-        const cmd = this.commands[0]
+    build(operations) {
+        this.operations = operations || this.operations
         this.fn = (ctx, resObj) => {
+            let client
             return new Promise(async (resolve, reject) => {
-                let client, db, col, result
                 try {
                     client = await MongoClient.connect(this.getAuthUrl())
-
-                    cmd.db && (db = client.db(cmd.db))
-                    cmd.collection && db && (col = db.collection(cmd.collection))
-
-                    if (cmd.db && cmd.collection) {
-                        result = await col[cmd.operation](...cmd.params).toArray()
-                    }
-                    return resolve(result)
+                    return resolve(promisePlus[this.mode](this.getOperations(ctx, client, this.operations)))
                 } catch (err) {
-                    return reject(err)
-                } finally {
                     client && client.close()
+                    return reject(err)
                 }
+            }).then(r => {
+                client && client.close()
+                return r
             })
         }
     }
@@ -50,8 +50,26 @@ class MongoActivity extends Activity {
         return url
     }
 
-    getCommands() {
+    getOperations(ctx, client, operations) {
+        if (!Array.isArray(operations)) {
+            return null
+        }
+        return operations.map(c => (col, db) => this.getPromiseOperation(ctx, client, c))
+    }
 
+    getPromiseOperation(ctx, client, operation) {
+        const db = client.db(operation.db),
+            col = db.collection(operation.collection),
+            collectionKeyName = operation.colllectionKeyName || 'col',
+            dbKeyName = operation.dbKeyName || 'db',
+            rp = new Replacer({
+                [this.ctxName]: this.context || ctx,
+                [collectionKeyName]: col,
+                [dbKeyName]: db
+
+            }),
+            sqlText = rp.string(operation.command)
+        return getFunction(collectionKeyName, dbKeyName, sqlText)(col, db)
     }
 }
 

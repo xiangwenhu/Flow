@@ -28,19 +28,26 @@ function race(promises, ...args) {
 /**
  * 顺序执行Promise，并返回结果
  * @param {返回promise的函数集合} promises 
+ * @param {每一步的回调函数，非异步,可以考虑后期支持} cb 
  * @param {附加参数} args 
  */
-function sequence(promises, ...args) {
-    const p = Promise.resolve()
-    let len = promises.length,
-        i = 0
+function sequence(promises, cb, ...args) {
+    const p = Promise.resolve(),
+        len = promises.length
+    let i = 0
+    //如果cb不是函数
+    if (typeof cb !== 'function') {
+        cb = null
+        args = [cb, ...args]
+    }
 
     function callBack(...params) {
         return p.then(r => {
             return promises[i](r, ...params)
         }).then(r => {
             ++i
-            return i > len - 1 ? Promise.resolve(r) : callBack(r, ...params)
+            cb && cb(r, i, ...params)
+            return i > len - 1 ? Promise.resolve(r) : callBack(...params)
         })
     }
 
@@ -52,9 +59,9 @@ function sequence(promises, ...args) {
  * @param {返回promise的函数集合} promises 
  * @param {附加参数} args 
  */
-function delaySequence(promises, ...args) {
+function delaySequence(promises, cb, ...args) {
     return function (..._args) {
-        return sequence(promises, ...[...args, ..._args])
+        return sequence(promises, cb, ...[...args, ..._args])
     }
 }
 

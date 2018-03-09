@@ -1,4 +1,5 @@
 {
     "auth": "object",
-    "commands": "array"  
+    "mode": "string",
+    "operations": "array"
 }

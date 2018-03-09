@@ -2,13 +2,13 @@ const {
     race,
     all,
     sequence
-} = require('./utils/promisePlus')
+} = require('./promise/plus')
+require('./activity/MongoActivity')
 
 
 const p1 = function () {
         return new Promise((resolve, reject) => {
             setTimeout(function () {
-                printTime(1)
                 resolve(1)
             }, 1000)
         })
@@ -16,7 +16,6 @@ const p1 = function () {
     p2 = function () {
         return new Promise((resolve, reject) => {
             setTimeout(function () {
-                printTime(2)
                 resolve(2)
             }, 2000)
         })
@@ -24,7 +23,6 @@ const p1 = function () {
     p3 = function () {
         return new Promise((resolve, reject) => {
             setTimeout(function () {
-                printTime(3)
                 resolve(3)
             }, 3000)
         })
@@ -37,4 +35,9 @@ function printTime() {
 
 const promises = [p1, p2, p3]
 
-sequence(promises).then(r => printTime('result:', r))
+sequence(promises, function (r, i, ...args) {
+    console.log('result:' + r, 'index:' + i, 'args:' + args)
+}, {
+    a: 1,
+    b: 2
+},3).then(r => printTime('result:', r))
