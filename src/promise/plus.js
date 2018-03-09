@@ -34,6 +34,9 @@ function race(promises, ...args) {
 function sequence(promises, cb, ...args) {
     const p = Promise.resolve(),
         len = promises.length
+    if (len <= 0) {
+        return p
+    }
     let i = 0
     //如果cb不是函数
     if (typeof cb !== 'function') {
