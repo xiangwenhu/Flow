@@ -1,3 +1,7 @@
+const {
+    isPromise,
+    isFunction
+} = require('../utils/typeChecker')
 /**
  * 转换为Promise集合
  * @param {Promise的集合或者之后后返回promise的函数集合} promises 
@@ -37,24 +41,27 @@ function sequence(promises, cb, ...args) {
     if (len <= 0) {
         return p
     }
-    let i = 0
+    let i = 0,
+        cbr,
+        isPromiseCallBack
     //如果cb不是函数
-    if (typeof cb !== 'function') {
+    if (!isFunction(cb)) {
         cb = null
         args = [cb, ...args]
     }
 
-    function callBack(...params) {
+    function next(...params) {
         return p.then(r => {
             return promises[i](r, ...params)
         }).then(r => {
             ++i
-            cb && cb(r, i, ...params)
-            return i > len - 1 ? Promise.resolve(r) : callBack(...params)
+            return isFunction(cb) && (isPromiseCallBack = isPromise(cbr = cb(r, i, ...params))) ? cbr : r
+        }).then(r => {
+            return i > len - 1 ? Promise.resolve(r) : next(...params)
         })
     }
 
-    return callBack(...args)
+    return next(...args)
 }
 
 /**

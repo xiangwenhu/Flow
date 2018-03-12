@@ -36,8 +36,15 @@ function printTime() {
 const promises = [p1, p2, p3]
 
 sequence(promises, function (r, i, ...args) {
-    console.log('result:' + r, 'index:' + i, 'args:' + args)
+    //return new Promise((resolve, reject) => {
+
+        console.log('Time:', new Date().toLocaleString())
+        console.log('result:' + r, 'index:' + i, 'args:' + args)
+        console.log('')
+    // resolve('haha')
+
+    //})
 }, {
     a: 1,
     b: 2
-},3).then(r => printTime('result:', r))
+}, 3).then(r => printTime('result:', r))

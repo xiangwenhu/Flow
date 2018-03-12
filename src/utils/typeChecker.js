@@ -22,7 +22,7 @@ function isLength(v) {
     }
 }, checker);
 
-['RegExp', 'Set', 'WeakSet', 'Map', 'WeakMap', 'Error', 'ArrayBuffer', 'Arguments'].map(function (t) {
+['RegExp', 'Set', 'WeakSet', 'Map', 'WeakMap', 'Error', 'ArrayBuffer', 'Arguments', 'Promise'].map(function (t) {
     this[`is${t}`] = function (v) {
         return isObjectLike(v) && getTag(v) === `[object ${t}]`
     }
