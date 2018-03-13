@@ -42,10 +42,22 @@ module.exports = class FlowInstance {
         if (this._isRuning) {
             throw new Error('实例正在运行中')
         }
-        this._isRuning = true     
+        this._isRuning = true
         this.context = context
         this.globalContext = globalContext
-        return this.activity.execute(this.context)
+        return this.activity.execute(this.context).catch(err => {
+            // 处理 activity 没有孩子节点， 有孩子节点的error是在SequenceActivity里面处理的
+            if (!this.hasChildren()) {
+                err.activityId = this.activity._id
+                err._stack = err.stack
+            }
+            throw err
+        })
+    }
+
+
+    hasChildren() {
+        return !!this.children
     }
 
     /**

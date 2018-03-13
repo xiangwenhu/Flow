@@ -9,10 +9,10 @@ class DelayActivity extends Activity {
 
     build(time) {
         this.time = time || this.time
-        this.fn = () => {
+        this.fn = (ctx, res) => {
             return new Promise((resolve, reject) => {
                 setTimeout(function () {
-                    resolve(true)
+                    resolve(res)
                 }, this.time)
             })
         }

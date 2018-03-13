@@ -130,7 +130,7 @@ class SequenceActivity extends Activity {
                                 isFunction(ins.beforeExecute) && ins.beforeExecute.apply(ins, realContext, res, _global_, ...otherParams)
 
                                 // 执行                              
-                                res = await ins.execute(realContext, res || {})
+                                res = await ins.execute(realContext, res)
 
                                 // 需要停止 ?? 转移到 Activity 里面去？
                                 if (self.needTerminate(self)) {

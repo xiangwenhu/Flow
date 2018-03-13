@@ -7,9 +7,13 @@ socket.on('connection', () => {
 socket.on('status', (id, data) => {
     renderFlow(data)
 })
-socket.on('finish', (r, ctx) => {  
+socket.on('finish', (r, ctx) => {
     console.log('执行结果:', r)
     console.log('执行上下文', ctx)
+    result.innerText = `
+        执行结果: ${oToString(r)}\r\n
+        上下文context: ${oToString(ctx)}\r\n
+    `
 })
 socket.on('context', context => console.log('context:', context))
 
@@ -34,4 +38,9 @@ btnExecute.addEventListener('click', function () {
 function renderFlow(data) {
     progressFactory.fromServer = true
     progressFactory.build(data, '#progressEl')
+}
+
+
+function oToString(v) {
+    return typeof v === 'object' && v != null ? JSON.stringify(v) : v
 }
