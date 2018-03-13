@@ -46,5 +46,11 @@ Activity集合的容器
 ## 编码风格参考
 [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
 
+## 运行步骤
+1. 下载到本地
+2. npm install
+3. node server/app.js
+4. 输入地址 http://localhost:3001/demo/index.html
+
 
 
