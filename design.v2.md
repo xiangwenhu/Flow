@@ -109,5 +109,13 @@ XXX: + 说明：
 
 
 
+## 
+1. 去除compose，切换sequence驱动方式为PromisePlus
+2. 动态注册Activity，新增不挂机
+3. 复杂场景
+
+
+
+
 
 

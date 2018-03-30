@@ -1,7 +1,7 @@
 function _getFunction(params, code) {
     code = code.replace(/\r|\n/g, '')
-        .replace(/""/, '\\\\""')
-        .replace(/''/, "\\\\''")
+        .replace(/""/g, '\\\\""')
+        .replace(/''/g, "\\\\''")
     params = params.map(c => `'${c}'`).join()
     const funStr = `return new Function(${params}, ${code}) `
     return (new Function(funStr))()
